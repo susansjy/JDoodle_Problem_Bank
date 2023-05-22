@@ -7,7 +7,7 @@ import { RouterView } from 'vue-router'
     <nav class="navbar">
       <div class="container">
         <a class="navbar-brand" href="#">
-          <img src="@/assets/logo.svg" alt="Frontend" height="48" />
+          <img src="@/assets/jdoodle.png" alt="Frontend" height="36" />
         </a>
       </div>
     </nav>
