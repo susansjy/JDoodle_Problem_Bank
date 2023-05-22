@@ -13,7 +13,7 @@ Vue 3, NestJs, WebSocket, Lodash, lowdb, Bootstrap, Axios
 
 **backend**: contains the backend implementation using NestJs. It includes functionalities such as randomly selecting five questions, unit tests, and obtaining the WebSocket token.
 
-## Installation and run
+## Run
 To run the web app successfully, please follow these steps:
 
 ```bash
