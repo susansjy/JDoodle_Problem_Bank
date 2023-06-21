@@ -31,6 +31,7 @@ npm run start:dev
 ```
 
 Install Docker first.
+
 Start database:
 ```bash
 docker compose up -d
