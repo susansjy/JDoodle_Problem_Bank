@@ -13,6 +13,16 @@ const router = createRouter({
       path: '/result',
       name: 'result',
       component: () => import('../views/ResultView.vue')
+    },
+    {
+      path: '/answer',
+      name: 'answer',
+      component: () => import('../views/AnswerView.vue')
+    },
+    {
+      path: '/socket',
+      name: 'socket',
+      component: () => import('../views/SocketView.vue')
     }
   ]
 })

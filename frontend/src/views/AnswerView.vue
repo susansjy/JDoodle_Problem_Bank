@@ -1,30 +1,30 @@
 <script setup>
-import { reactive, onMounted } from 'vue'
-import { map } from 'lodash'
-import { axios, lowdb } from '@/helper.js'
+import { ref, onMounted } from 'vue'
+import { axios } from '@/helper.js'
 import Cookies from 'js-cookie'
+import { map } from 'lodash'
 
 const username = Cookies.get("jdoodle_username");
 
-lowdb.read()
-let questions = reactive(lowdb.data)
+let questions = ref([])
 
-onMounted(() => {
-  questions.forEach(({ id, answer, testCases }, index) => {
+onMounted(async () => {
+  const answers = await axios.get('/answer/' + username)
+
+  questions.value = answers.map(({ answer, question }) =>({ ...question, answer }))
+
+  questions.value.forEach(({ answer, testCases }, index) => {
     axios
-      .post('/nodeJSExecuteAndSaveAnswer', {
-        username: username,
-        questionId: id,
-        answer: answer,
+      .post('/nodeJSExecute', {
         script: [answer, ...map(testCases, 'code')].join(';')
       })
       .then(({ result }) => {
         const resultArray = result.split(/\s/)
 
-        for (let i = 0; i < questions[index].testCases.length; i++) {
-          questions[index].testCases[i].passed = resultArray[i] === 'true'
+        for (let i = 0; i < questions.value[index].testCases.length; i++) {
+          questions.value[index].testCases[i].passed = resultArray[i] === 'true'
         }
-      })
+      });
   })
 })
 </script>

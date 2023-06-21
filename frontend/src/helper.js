@@ -9,7 +9,7 @@ export const axios = axiosCreate.create({
 })
 
 axios.interceptors.response.use(
-  (response) => response.data,
+  (response) => response.data.data,
   (e) => {
     return Promise.reject(e)
   }

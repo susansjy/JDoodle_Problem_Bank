@@ -11,31 +11,9 @@ const router = useRouter()
 let username = ref(Cookies.get("jdoodle_username") ?? "")
 let isCookieUsername = ref(!!username.value);
 
-let questions = reactive([])
-
-let isLoading = ref(true)
-let questionsIndex = ref(route.query.questionsIndex ?? 0)
-let question = computed(() => questions[questionsIndex.value])
-
-function prevQuestion() {
-  questionsIndex.value--
-  initialQuestion()
-}
-
-function nextQuestion() {
-  questionsIndex.value++
-  initialQuestion()
-}
-
-function submitAllQuestions() {
-  lowdb.data = questions
-  lowdb.write()
-  router.push('/result')
-}
 
 let socketClient = null
 async function initialQuestion() {
-  isLoading.value = true
   if (socketClient) {
     socketClient.disconnect()
   }
@@ -43,7 +21,7 @@ async function initialQuestion() {
   const { token } = await axios.get('/websocketToken')
   socketClient = window.webstomp.over(new window.SockJS('https://api.jdoodle.com/v1/stomp'), {
     heartbeat: false,
-    debug: false
+    debug: true
   })
   socketClient.connect(
     {},
@@ -51,10 +29,6 @@ async function initialQuestion() {
       let wsNextId
 
       socketClient.subscribe('/user/queue/execute-i', (message) => {
-        if (isLoading.value) {
-          isLoading.value = false
-        }
-
         let msgId = message.headers['message-id']
         let msgSeq = parseInt(msgId.substring(msgId.lastIndexOf('-') + 1))
         let statusCode = parseInt(message.headers.statusCode)
@@ -80,7 +54,8 @@ async function initialQuestion() {
             console.log('Unauthorised request')
           } else {
             if (message.body) {
-              questions[questionsIndex.value].answer += message.body + '\n'
+              var txt = document.querySelector("textarea").value
+              document.querySelector("textarea").value = txt + message.body + "\n"
             }
           }
         }
@@ -89,7 +64,14 @@ async function initialQuestion() {
       })
 
       let data = JSON.stringify({
-        script: '',
+        script: `const readline = require('readline'); 
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+rl.question('What is your favorite food?', (answer) => {
+  console.log("Oh, so your favorite food is " + answer);
+});`,
         language: 'nodejs',
         versionIndex: 4
       })
@@ -100,8 +82,6 @@ async function initialQuestion() {
   )
 }
 onMounted(async () => {
-  const result = await axios.get('/fiveQuestions')
-  questions = result.map((question) => ({ ...question, answer: '' }))
   initialQuestion()
 })
 
@@ -135,50 +115,16 @@ function textareaOnKeypress(e) {
       </div>
     </div>
     <div class="my-4">
-      <div v-if="isLoading" class="d-flex justify-content-center">
-        <div class="spinner-border">
-          <span class="visually-hidden">Loading...</span>
-        </div>
+      <div class="d-flex justify-content-between mb-4">
+        <h3>WebSocket example</h3>
       </div>
-
-      <div v-else>
-        <div class="d-flex justify-content-between mb-4">
-          <h3>FUNCTION NAME: {{ question.functionName }}</h3>
-
-          <div class="btn-group" role="group" aria-label="Basic example">
-            <button
-              type="button"
-              class="btn btn-primary"
-              :disabled="questionsIndex < 1"
-              @click="prevQuestion"
-            >
-              Prev
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              :disabled="questionsIndex >= questions.length - 1"
-              @click="nextQuestion"
-            >
-              Next
-            </button>
-            <button type="button" class="btn btn-warning" @click="submitAllQuestions">
-              Submit All
-            </button>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-body">
-            <p>{{ question.detail }}</p>
-
-            <textarea
-              rows="8"
-              class="form-control"
-              :placeholder="question.placeholder"
-              v-model="questions[questionsIndex].answer"
-              @keypress="textareaOnKeypress"
-            />
-          </div>
+      <div class="card">
+        <div class="card-body">
+          <textarea
+            rows="8"
+            class="form-control"
+            @keypress="textareaOnKeypress"
+          />
         </div>
       </div>
     </div>

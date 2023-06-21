@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  database:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      TZ: Australia/Sydney
+    ports:
+     - "3306:3306"
+
+  adminer:
+    image: adminer
+    environment:
+      ADMINER_DEFAULT_SERVER: database
+    ports:
+      - "8080:8080"

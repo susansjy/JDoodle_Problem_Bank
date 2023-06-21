@@ -6,9 +6,12 @@ import { RouterView } from 'vue-router'
   <header>
     <nav class="navbar">
       <div class="container">
-        <a class="navbar-brand" href="#">
-          <img src="@/assets/jdoodle.png" alt="Frontend" height="36" />
-        </a>
+        <img src="@/assets/logo.png" alt="Frontend" height="32" />
+        
+
+        <router-link to="/answer">
+          <button type="button" class="btn btn-primary">My All Answers</button>
+        </router-link>
       </div>
     </nav>
   </header>
