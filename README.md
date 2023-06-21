@@ -16,16 +16,23 @@ Vue 3, NestJs, WebSocket, Lodash, lowdb, Bootstrap, Axios
 ## How to run
 To run the web app successfully, please follow these steps:
 
+Start frontend:
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
+Start backend:
 ```bash
 cd backend
 npm install
 npm run start:dev
+```
+
+Start database:
+```bash
+docker compose up -d
 ```
 
 Then you can visit http://127.0.0.1:5173/
