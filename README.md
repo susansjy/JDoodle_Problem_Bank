@@ -37,4 +37,6 @@ Start database:
 docker compose up -d
 ```
 
-Then you can visit http://127.0.0.1:5173/
+Then you can visit the page on http://127.0.0.1:5173/.
+
+The database is shown on http://localhost:8080/.
